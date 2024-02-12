@@ -262,7 +262,7 @@ basicstyle=\ttfamily\scriptsize}
 \end{frame}
 \begin{frame}[fragile]{ScaFi: syntax as a core language/API}
 
-\begin{minted}{scala}
+	\begin{mycode}{}{}{}
 trait Constructs {
 	// the unique identifier of the local device 
 	def mid(): ID
@@ -286,12 +286,11 @@ trait Constructs {
 	def nbrvar[A](name: CNAME): A
 	...
 }
-\end{minted}
+\end{mycode}
 \end{frame}
 
 \begin{frame}[fragile]{ScaFi: setup an aggregate application}
-
-\begin{minted}{scala}
+\begin{mycode}{}{}{}
 package experiments
 // STEP 1 Choose an incarnation (simulated or real)
 import it.unibo.scafi.incarnations.BasicSimulationIncarnation._
@@ -299,7 +298,7 @@ import it.unibo.scafi.incarnations.BasicSimulationIncarnation._
 // STEP 2 Define the aggregate program including the right libraries
 class MyProgram extends AggregateProgram with Libs {
 	// STEP 2.1 Define main logic of the program
-	override def main(): Any = ...
+	override def main(): Any = rep(0)(_ + 1)
 }
 
 // STEP 3 Platform/Node setup (both in simulation/real)
@@ -310,7 +309,7 @@ object SimulationRunner extends Launcher {
   Settings.ShowConfigPanel = true
   launch()
 }
-\end{minted}
+\end{mycode}
 \end{frame}
 \begin{frame}{An aggregate computing playground -- ScaFi Web!}
 \centering
