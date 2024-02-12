@@ -34,6 +34,7 @@
 %	maxcitenames=1,
 	bibstyle=numeric,
 	style=ieee]{biblatex}
+\usepackage{graphicx}
 
 	\makeatletter
 
@@ -179,7 +180,7 @@ basicstyle=\ttfamily\scriptsize}
 \begin{frame}{Aggregate Programming -- What we want}
 	\begin{exampleblock}{Goal}
 		\begin{itemize}
-			\item a \bold{minimal core} to cover the main functionality of FC
+			\item a \bold{minimal core} to cover the main functionality of field calculus
 			\item a \bold{set of libraries} that cover the main building blocks
 			\item an \bold{high-level API} for domain-specific applications
 		\end{itemize}
@@ -192,25 +193,25 @@ basicstyle=\ttfamily\scriptsize}
 			\end{itemize}
 			\item Support several infrastructures
 			\begin{itemize}
-				\item \emph{peer-to-peer, server-based, cloud-edge} 
+				\item \emph{peer-to-peer, server-based, cloud-edge} -- \underline{pulverization? Nicolas talk}
 			\end{itemize}
 			\item Expressive and simple enough to reduce the cognitive load
 		\end{itemize}
 	\end{exampleblock}
 \end{frame}
 
-\begin{frame}[allowframebreaks]{FC: current implementations}
+\begin{frame}[allowframebreaks]{Aggregate programming: current implementations}
 	\begin{center}
-	A large number of incarnations and implementations have been developed over the years, with different trade-offs and goals.
+	A large number of incarnations and implementations have been developed over the years, with different \emph{trade-offs} and \emph{goals}.
 	\end{center}
 	\begin{exampleblock}{External DSL}
 		\begin{itemize}
-			\item \bold{Proto}: first incarnation of FC
+			\item \bold{Proto}~\cite{proto}: first incarnation of FC
 			\begin{itemize}
 				\item \faThumbsUp \, \emph{good performance} \faArrowRight \, \emph{low-level}
 				\item \faThumbsDown \, \emph{hard to use} \faArrowRight \, \emph{hard to maintain}
 			\end{itemize}
-			\item \bold{Protelis}: an external DSL based on Xtext
+			\item \bold{Protelis}~\cite{protelis}: an external DSL based on Xtext
 			\begin{itemize}
 				\item \faThumbsUp \, \emph{good ergonomics} \faArrowRight \, \emph{high-level}
 				\item \faThumbsUp \, \emph{extensive libraries} \faArrowRight \, \emph{easy to use}
@@ -222,12 +223,12 @@ basicstyle=\ttfamily\scriptsize}
 
 	\begin{exampleblock}{Internal DSL}
 		\begin{itemize}
-			\item \bold{FCPP}: a performance-oriented internal DSL in C++
+			\item \bold{FCPP}~\cite{fcpp}: a performance-oriented internal DSL in C++
 			\begin{itemize}
 				\item \faThumbsUp \, \emph{good performance} \faArrowRight \, \emph{low-level}
 				\item \faThumbsDown \, \emph{hard to use} \faArrowRight \, \emph{bad ergonomics}
 			\end{itemize}
-			\item \underline{\bold{ScaFi}}: a high-level internal DSL in Scala (current reference implementation and focus of this talk)
+			\item \underline{\bold{ScaFi}}~\cite{scafi}: a high-level internal DSL in Scala (current reference implementation and focus of this talk)
 			\begin{itemize}
 				\item \faThumbsUp \, \emph{good ergonomics} \faArrowRight \, \emph{high-level}
 				\item \faThumbsUp \, \emph{extensive libraries} \faArrowRight \, \emph{easy to use}
@@ -238,9 +239,11 @@ basicstyle=\ttfamily\scriptsize}
 	\end{exampleblock}
 
     \begin{exampleblock}{Experimental}
-        \item \bold{Collektive}: a high-level DSL in Kotlin leveraging the compiler plugin and the Kotlin Multiplatform
-        \item \bold{RuFi}: a minimal core in Rust (WIP)
-    \end{exampleblock}
+			\begin{itemize}
+        \item \bold{Collektive}\footnote{https://github.com/Collektive/collektive}: a high-level DSL in Kotlin leveraging the compiler plugin and the Kotlin Multiplatform
+        \item \bold{RuFi}\footnote{https://github.com/lm98/rufi}: a minimal core in Rust (WIP)
+			\end{itemize}
+		\end{exampleblock}
 \end{frame}
 \begin{frame}[c, plain]
 \begin{center}
@@ -256,13 +259,11 @@ basicstyle=\ttfamily\scriptsize}
 \centering
 \includegraphics[width=0.9\textwidth]{img/scafi-project-org.pdf}
 \end{frame}
-\begin{frame}{ScaFi: Design}
-\centering
-\includegraphics[width=0.8\textwidth]{img/scafi-design.drawio.pdf}
-\end{frame}
-\begin{frame}{ScaFi: Cross-platform}
-\includegraphics{img/multi-platform.drawio}
-\end{frame}
+%\begin{frame}{ScaFi: Design}
+%\centering
+%\includegraphics[width=0.8\textwidth]{img/scafi-design.drawio.pdf}
+%\end{frame}
+
 \begin{frame}[fragile]{ScaFi: syntax as a core language/API}
 
 	\begin{mycode}{}{}{}
@@ -273,7 +274,7 @@ trait Constructs {
 	// applies fun to the previous result, or to init at the first call
 	def rep[A](init: A)(fun: (A) => A): A
 	
-	// evaluation of expr at the currently-considered neighbour
+	// evaluation of expr at the currently-considered neighbor
 	def nbr[A](expr: => A): A
 	
 	// accumulates available evaluations of expr, with acc/init monoid
@@ -291,7 +292,14 @@ trait Constructs {
 }
 \end{mycode}
 \end{frame}
-
+\begin{frame}{ScaFi: Cross-platform}
+	ScaFi leverages Scala.js and Scala Native to be a multi-target framework
+	\begin{itemize}
+		\item ScaFi-web~\cite{DBLP:conf/coordination/AguzziCMPV21} is an example of an application that uses the js variant of ScaFi.
+	\end{itemize}
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/multi-platform.drawio}
+\end{frame}
 \begin{frame}[fragile]{ScaFi: setup an aggregate application}
 \begin{mycode}{}{}{}
 package experiments
@@ -317,16 +325,39 @@ object SimulationRunner extends Launcher {
 \begin{frame}{An aggregate computing playground -- ScaFi Web!}
 \centering
 \url{https://scafi.github.io/web/}
-\includegraphics[width=\textwidth]{img/gradient-web.png}
+\centering
+\includegraphics[width=0.8\textwidth]{img/gradient-web.png}
 \end{frame}
 
+\begin{frame}{ScaFi Blocks}
+ScaFi Blocks is a visual programming environment for ScaFi.
+\centering
+\includegraphics[width=0.9\textwidth]{img/scafiblocks.png}
+\end{frame}
+\begin{frame}{ScaFi application -- Swarm Programming}
+	\begin{exampleblock}{MacroSwarm}
+		MacroSwarm\footnote{\url{https://scafi.github.io/macro-swarm/}}~\cite{macroswarm-arxiv} is a ScaFi library for programming swarm robotics applications.
+	\end{exampleblock}
+	\centering
+	\includegraphics[width=0.9\textwidth]{img/macro-swarm.png}
+\end{frame}
+
+\begin{frame}{ScaFi application -- IoT}
+	\begin{exampleblock}{AP for large-scape IoT collective behavior programming}
+		ScaFi is used to program IoT applications, e.g., for smart cities, smart buildings, and smart agriculture.
+	\end{exampleblock}
+	\fullcite{iee-floodwatch}
+
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/iee-floodwatch.png}
+\end{frame}
 %\section{Aggregate Computing -- Research Profiles}
 %\begin{frame}{Swarm Robotics}
 
 %\end{frame}
 %\begin{frame}{\st{Multi} Many agent reinforcement}
 %\end{frame}
-
+\begin{comment}
 \begin{frame}[fragile]{Example 1: static constant field}
 
 \begin{mycode}{}{}{}
@@ -404,7 +435,7 @@ rep(Double.PositiveInfinity)(distance =>
 \imgv{0.7}{example8-gradient.png}
 
 \end{frame}
-
+\end{comment}
 
 \section{}
 
@@ -421,8 +452,6 @@ rep(Double.PositiveInfinity)(distance =>
 %%%%
 \setbeamertemplate{page number in head/foot}{}
 %/////////
-
-
 \begin{frame}[allowframebreaks]{References}
 \def\bibfont{\footnotesize}
 \printbibliography
