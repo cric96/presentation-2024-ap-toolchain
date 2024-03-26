@@ -14,10 +14,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions: { }
+
 jobs:
-  Setup-Compile-Deploy:
+  success:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: DanySK/compile-and-publish-all-latex@1.0.3
+      - uses: DanySK/compile-and-publish-all-latex@2.0.4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
